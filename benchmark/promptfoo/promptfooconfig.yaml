@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+description: Resume-bullet rewriter — Promptfoo implementation of the shared workload.
+
+prompts:
+  - file://prompts/rewrite.txt
+
+providers:
+  - id: openai:gpt-4o-mini
+    config:
+      temperature: 0.2
+
+tests: file://tests.js:generateTests
+
+defaultTest:
+  assert:
+    # 1. Faithfulness — LLM judge, strict. Rubric is the canonical markdown file.
+    - type: llm-rubric
+      value: file://../faithfulness-rubric.md
+      provider: openai:gpt-4o
+      metric: faithfulness
+
+    # 2. Theme coverage — programmatic, uses row metadata.
+    - type: javascript
+      value: file://assertions/theme_coverage.js
+      metric: theme_coverage
+
+    # 3. Style — LLM judge against STAR rubric.
+    - type: llm-rubric
+      value: file://../style-rubric.md
+      provider: openai:gpt-4o
+      metric: style
+
+    # 4. Length — programmatic, 25–40 words.
+    - type: javascript
+      value: file://assertions/length.js
+      metric: length
+
+outputPath: results.json
