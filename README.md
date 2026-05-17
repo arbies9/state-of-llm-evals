@@ -50,7 +50,7 @@ Full version: [`methodology/rubric.md`](./methodology/rubric.md).
 - [x] Tool list locked
 - [x] Rubric drafted
 - [x] Sample workload implemented (resume-bullet rewriter, 50 prompts)
-- [ ] Per-tool implementations (1 of 5 — Promptfoo done; Braintrust, LangSmith, Inspect, Ragas pending)
+- [ ] Per-tool implementations (2 of 5 — Promptfoo + Braintrust done; LangSmith, Inspect, Ragas pending)
 - [ ] Scoring pass
 - [ ] First public draft
 - [ ] Open for review / corrections

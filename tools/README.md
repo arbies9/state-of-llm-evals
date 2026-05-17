@@ -12,7 +12,7 @@ One file per tool. Each follows the same shape so you can scan them side by side
 Files (placeholders, to be filled during the eval pass):
 
 - [x] `promptfoo.md` (draft — scores provisional until scoring pass)
-- [ ] `braintrust.md`
+- [x] `braintrust.md` (draft — scores provisional until scoring pass)
 - [ ] `langsmith.md`
 - [ ] `inspect.md`
 - [ ] `ragas.md`
