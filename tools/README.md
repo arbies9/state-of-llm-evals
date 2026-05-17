@@ -14,5 +14,5 @@ Files (placeholders, to be filled during the eval pass):
 - [x] `promptfoo.md` (draft — scores provisional until scoring pass)
 - [x] `braintrust.md` (draft — scores provisional until scoring pass)
 - [x] `langsmith.md` (draft — scores provisional until scoring pass)
-- [ ] `inspect.md`
+- [x] `inspect.md` (draft — scores provisional until scoring pass)
 - [ ] `ragas.md`
