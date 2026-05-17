@@ -15,4 +15,4 @@ Files (placeholders, to be filled during the eval pass):
 - [x] `braintrust.md` (draft — scores provisional until scoring pass)
 - [x] `langsmith.md` (draft — scores provisional until scoring pass)
 - [x] `inspect.md` (draft — scores provisional until scoring pass)
-- [ ] `ragas.md`
+- [x] `ragas.md` (brief-only — implementation deliberately skipped; workload isn't RAG-shaped)

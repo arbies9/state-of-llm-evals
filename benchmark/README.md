@@ -5,14 +5,17 @@ Every tool's implementation of the sample workload lives here, in its own subdir
 ```
 benchmark/
 ├── dataset.jsonl       # the 50-bullet eval set (shared)
-├── promptfoo/          # YAML config + custom assertions
-├── braintrust/         # TS/Python script using the Braintrust SDK
-├── langsmith/          # Python script using LangSmith evaluators
-├── inspect/            # Inspect task definitions
-└── ragas/              # Ragas metric pipeline
+├── style-rubric.md     # STAR-style judge rubric (shared by all tools)
+├── faithfulness-rubric.md  # strict faithfulness judge rubric (shared)
+├── promptfoo/          # YAML config + custom JS assertions
+├── braintrust/         # Python eval using braintrust.Eval()
+├── langsmith/          # Python eval using langsmith.evaluate()
+└── inspect/            # Python eval using inspect-ai @task/@scorer
 ```
 
-Goal: a curious reader can clone the repo, `cd` into one of these, and reproduce the scores from `comparison.md`.
+There is deliberately **no `ragas/` directory.** Ragas is in the comparison as a brief-only entry — see [`../tools/ragas.md`](../tools/ragas.md). Short version: Ragas is a metric library for *RAG-shaped* tasks (question → retrieved context → answer), and our resume-bullet rewriter has none of that shape. Implementing it against this workload would be a contortion that tests nothing real.
+
+Goal: a curious reader can clone the repo, `cd` into one of the four implemented subdirs, and reproduce the scores from `comparison.md`.
 
 ## Reproducibility
 
