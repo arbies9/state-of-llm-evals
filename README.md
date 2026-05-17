@@ -2,7 +2,7 @@
 
 > An opinionated, methodology-first comparison of the tools people actually use to evaluate LLM applications: **Promptfoo, Braintrust, LangSmith, Inspect, and Ragas**.
 
-This is a working deep-dive, not a marketing matrix. The point is to help a tech lead or TPM pick the right eval stack for a given team — and to show their reasoning in writing.
+This is a working deep-dive, not a marketing matrix. It's the artifact a TPM or eng lead can cite when explaining *"why we picked X"* to leadership, engineers, and finance — grounded in working implementations across all five frameworks, not vendor positioning.
 
 ---
 
@@ -20,20 +20,49 @@ Full ratings are computed from the rubric in [`methodology/rubric.md`](./methodo
 
 ---
 
+## Who this is for
+
+A **TPM, eng lead, or staff engineer** making a defensible eval-tool choice for an LLM-shipping product team — and who has to explain that choice to leadership, finance, and the engineers who'll actually use it.
+
+The rubric is tuned for **mid-size product teams (5-30 engineers) shipping LLM features in product**, not solo hackers or research labs. If your context is different — regulated industry where safety should weigh 0.30 instead of 0.10, a research lab grading capability benchmarks, an early-stage team where cost dominates — the rubric is forkable. Re-weight first, then read.
+
+What this artifact gets you that vendor blog posts and Twitter threads don't:
+
+- A **defensible** recommendation, not a vibes-based one. You can point to the rubric, the weights, the per-tool scores, and the working implementation that backs the brief.
+- A **shared vocabulary** between TPM and engineers. The same per-tool brief is useful to both — "Where it bites" is what the TPM needs for the decision doc; the implementation in `benchmark/<tool>/` is what the engineers want to read before committing.
+- **Cost intuition** before contracts. Per-tool briefs name the pricing model (per-seat, per-trace, per-eval) so you walk into procurement with a realistic budget ask, not a vendor's "starting at $X/month" headline.
+- A **template you can reuse.** When the same team needs to pick an observability tool, a feature-flag service, or any other infra decision, the methodology transfers. The rubric is forkable on purpose.
+
+---
+
 ## What you'll find here
 
 - **[`methodology/`](./methodology/)** — how each tool was scored: rubric, weights, the sample app used as a workload, and what's deliberately excluded.
-- **[`tools/`](./tools/)** — one markdown brief per tool: setup cost, primitives, where it shines, where it bites.
-- **[`benchmark/`](./benchmark/)** — a tiny sample eval (resume-bullet rewriter) implemented in each framework, so the comparison is grounded in actual code.
+- **[`tools/`](./tools/)** — one markdown brief per tool: setup cost, primitives, where it shines, where it bites, weighted rubric score.
+- **[`benchmark/`](./benchmark/)** — the same 50-bullet eval workload (resume-bullet rewriter) implemented in each framework, so the briefs aren't vibes — there's working code behind every claim. Each subdir has a free `mock` mode that runs without API keys or accounts.
 - **[`comparison.md`](./comparison.md)** — the synthesized matrix and the recommendation flow.
 
 ---
 
-## Why I'm writing this
+## How a TPM uses this
 
-Eval tooling is the most under-discussed and most decision-shaping part of an LLM app. The wrong choice burns months of engineering trust. There are good per-tool docs and a lot of vendor blog posts, but very little **side-by-side, methodology-first** writing.
+A concrete workflow for someone walking into the "which eval tool should we adopt?" decision:
 
-This is also a deliberate TPM artifact for my portfolio: a real RFC-style comparison with a recommendation, not a feature checklist.
+1. **Skim TL;DR + rubric.** ~5 minutes. Decide whether the rubric weights match your team's context, or fork the rubric.
+2. **Read the 2-3 briefs that match your situation.** Not all five — that's wasted time. The *"Where it bites"* section is the one to read carefully; those are the tradeoffs you'll have to defend to leadership and to your engineers.
+3. **Send an engineer to `benchmark/<tool>/`.** ~20 minutes per tool. They sanity-check the brief's *"developer ergonomics"* claim against their own ramp — and they trust your recommendation more because you sent them to working code, not a vendor demo.
+4. **Write your own RFC.** Cite this project as the analysis. Attach the weighted score. Own the decision.
+5. *(Optional)* **Re-run the workload locally before procurement.** Each tool ships a `eval_mock.py` / mock config that runs offline in seconds. Useful for a 10-minute "does this look right" check before signing anything.
+
+The thing this artifact saves you from: spending two weeks reading vendor blog posts and ending up with *"Promptfoo seems good?"* — a recommendation you can't defend when your CTO asks *"okay, but why not Braintrust."*
+
+---
+
+## Why this exists
+
+The wrong eval-tool choice burns months of engineering trust, blows budget on traces nobody reviews, and locks you into vendor pricing that changes the moment your team becomes load-bearing on the tool. There are good per-tool docs and a lot of vendor blog posts; there is very little **side-by-side, methodology-first** writing a TPM can actually cite in a decision doc.
+
+This is also a deliberate TPM portfolio artifact: a real RFC-style comparison with a recommendation, not a feature checklist.
 
 ---
 
