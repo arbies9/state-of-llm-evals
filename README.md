@@ -1,4 +1,4 @@
-# State of LLM Evals (2026)
+# State of LLM Evals
 
 > An opinionated, methodology-first comparison of the tools people actually use to evaluate LLM applications: **Promptfoo, Braintrust, LangSmith, Inspect, and Ragas**.
 
