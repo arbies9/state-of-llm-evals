@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>State of LLM Evals</title>
+  <meta name="description" content="Methodology-first comparison of LLM eval tools: Promptfoo, Braintrust, LangSmith, Inspect, Ragas.">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <style>
+    :root {
+      --theme-color: #3b82f6;
+      --sidebar-name-color: #1f2937;
+    }
+    .sidebar > h1 { margin: 1.2rem 0 0.5rem; font-size: 1.1rem; }
+    .markdown-section table { display: table; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="app">Loading the State of LLM Evals…</div>
+  <script>
+    window.$docsify = {
+      name: 'State of LLM Evals',
+      repo: 'arbies9/state-of-llm-evals',
+      loadSidebar: true,
+      auto2top: true,
+      subMaxLevel: 2,
+      alias: {
+        '/benchmark/': '/benchmark/README.md',
+        '/benchmark/promptfoo/': '/benchmark/promptfoo/README.md',
+        '/benchmark/braintrust/': '/benchmark/braintrust/README.md',
+        '/benchmark/langsmith/': '/benchmark/langsmith/README.md',
+        '/benchmark/inspect/': '/benchmark/inspect/README.md',
+        '/tools/': '/tools/README.md',
+        '/methodology/': '/methodology/rubric.md'
+      },
+      search: {
+        placeholder: 'Search the project…',
+        noData: 'No matches.',
+        depth: 4
+      }
+    };
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-yaml.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+</body>
+</html>
