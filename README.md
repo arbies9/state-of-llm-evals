@@ -6,11 +6,17 @@ This is a working deep-dive, not a marketing matrix. It's the artifact a TPM or 
 
 ## Run it locally (no API keys, no cost)
 
+Two single-command entry points, depending on what you want:
+
 ```bash
-./run-mocks.sh
+./run-docs.sh        # browse the docs at http://localhost:3000 (needs: node)
+./run-mocks.sh       # run all four tool mocks + side-by-side table (needs: node, python3)
 ```
 
-Runs the same eval workload through all four implemented tools in mock mode (~10 seconds), then prints a side-by-side per-metric pass-rate table. Requires only `python3` and `node` — no accounts, no API keys, no charges. This is the one-command "does this project actually work" check.
+- **`./run-docs.sh`** spins up a local markdown server so you can read the README, methodology, tool briefs, and benchmark docs as rendered pages — the same experience as the GitHub repo but offline. Ctrl+C to stop.
+- **`./run-mocks.sh`** runs the same 50-bullet eval workload through all four implemented tools in mock mode (~10 seconds), then prints per-metric pass-rate columns side by side. The "does this project actually work" check.
+
+Neither needs an account, an API key, or any spend.
 
 ---
 
