@@ -7,7 +7,7 @@ const path = require('path');
 
 const DATASET_PATH = path.resolve(__dirname, '..', 'dataset.jsonl');
 
-module.exports = function generateTests() {
+function generateTests() {
   const lines = fs
     .readFileSync(DATASET_PATH, 'utf8')
     .split('\n')
@@ -25,4 +25,6 @@ module.exports = function generateTests() {
       description: `${row.id} [${row.domain}] ${row.input}`,
     };
   });
-};
+}
+
+module.exports = { generateTests };

@@ -5,4 +5,4 @@ __pycache__
 .DS_Store
 *.sqlite
 .claude/
-benchmark/*/results.json
+benchmark/*/results*.json
