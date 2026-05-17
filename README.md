@@ -4,6 +4,14 @@
 
 This is a working deep-dive, not a marketing matrix. It's the artifact a TPM or eng lead can cite when explaining *"why we picked X"* to leadership, engineers, and finance — grounded in working implementations across all five frameworks, not vendor positioning.
 
+## Run it locally (no API keys, no cost)
+
+```bash
+./run-mocks.sh
+```
+
+Runs the same eval workload through all four implemented tools in mock mode (~10 seconds), then prints a side-by-side per-metric pass-rate table. Requires only `python3` and `node` — no accounts, no API keys, no charges. This is the one-command "does this project actually work" check.
+
 ---
 
 ## TL;DR (preview — full ratings in [`comparison.md`](./comparison.md))
