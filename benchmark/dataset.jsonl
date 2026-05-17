@@ -1,0 +1,50 @@
+{"id": "sw-01", "input": "Helped with project", "domain": "software", "expected_themes": ["scope", "team", "delivery", "outcome"]}
+{"id": "sw-02", "input": "Fixed bugs in the API", "domain": "software", "expected_themes": ["api", "bugs", "users", "stability"]}
+{"id": "sw-03", "input": "Built a new feature", "domain": "software", "expected_themes": ["feature", "users", "release", "adoption"]}
+{"id": "sw-04", "input": "Did code reviews", "domain": "software", "expected_themes": ["code review", "team", "quality", "velocity"]}
+{"id": "sw-05", "input": "Worked on database migration", "domain": "software", "expected_themes": ["migration", "database", "downtime", "users"]}
+{"id": "sw-06", "input": "Improved test coverage", "domain": "software", "expected_themes": ["tests", "coverage", "regressions", "ci"]}
+{"id": "sw-07", "input": "Implemented authentication", "domain": "software", "expected_themes": ["authentication", "security", "users", "rollout"]}
+{"id": "sw-08", "input": "Refactored old code", "domain": "software", "expected_themes": ["refactor", "legacy", "complexity", "maintainability"]}
+{"id": "sw-09", "input": "Helped with mobile app", "domain": "software", "expected_themes": ["mobile", "users", "release", "platform"]}
+{"id": "da-01", "input": "Analyzed customer data", "domain": "data", "expected_themes": ["customers", "analysis", "insights", "decisions"]}
+{"id": "da-02", "input": "Built dashboards", "domain": "data", "expected_themes": ["dashboards", "stakeholders", "metrics", "decisions"]}
+{"id": "da-03", "input": "Worked on ETL pipeline", "domain": "data", "expected_themes": ["pipeline", "etl", "reliability", "latency"]}
+{"id": "da-04", "input": "Did data cleaning", "domain": "data", "expected_themes": ["data quality", "cleanup", "downstream", "errors"]}
+{"id": "da-05", "input": "Trained a model", "domain": "data", "expected_themes": ["model", "training", "accuracy", "production"]}
+{"id": "da-06", "input": "Worked with the data team", "domain": "data", "expected_themes": ["data team", "collaboration", "deliverables", "scope"]}
+{"id": "da-07", "input": "Set up A/B test", "domain": "data", "expected_themes": ["a/b test", "experiment", "metrics", "decision"]}
+{"id": "da-08", "input": "Wrote SQL queries", "domain": "data", "expected_themes": ["sql", "queries", "performance", "stakeholders"]}
+{"id": "de-01", "input": "Worked on website redesign", "domain": "design", "expected_themes": ["redesign", "users", "stakeholders", "metrics"]}
+{"id": "de-02", "input": "Made wireframes", "domain": "design", "expected_themes": ["wireframes", "users", "iterations", "developers"]}
+{"id": "de-03", "input": "Did user research", "domain": "design", "expected_themes": ["users", "interviews", "insights", "product"]}
+{"id": "de-04", "input": "Updated brand guidelines", "domain": "design", "expected_themes": ["brand", "guidelines", "consistency", "teams"]}
+{"id": "de-05", "input": "Designed new feature", "domain": "design", "expected_themes": ["feature", "users", "design system", "adoption"]}
+{"id": "de-06", "input": "Helped with onboarding flow", "domain": "design", "expected_themes": ["onboarding", "users", "conversion", "iteration"]}
+{"id": "de-07", "input": "Improved accessibility", "domain": "design", "expected_themes": ["accessibility", "wcag", "users", "audit"]}
+{"id": "de-08", "input": "Made a design system", "domain": "design", "expected_themes": ["design system", "components", "teams", "consistency"]}
+{"id": "sa-01", "input": "Sold to new customers", "domain": "sales", "expected_themes": ["customers", "revenue", "pipeline", "quota"]}
+{"id": "sa-02", "input": "Hit my quota", "domain": "sales", "expected_themes": ["quota", "revenue", "deals", "year"]}
+{"id": "sa-03", "input": "Worked on big deals", "domain": "sales", "expected_themes": ["deals", "enterprise", "revenue", "cycle"]}
+{"id": "sa-04", "input": "Did outbound prospecting", "domain": "sales", "expected_themes": ["outbound", "prospects", "pipeline", "meetings"]}
+{"id": "sa-05", "input": "Helped close deals", "domain": "sales", "expected_themes": ["deals", "close", "revenue", "pipeline"]}
+{"id": "sa-06", "input": "Built customer relationships", "domain": "sales", "expected_themes": ["customers", "retention", "expansion", "trust"]}
+{"id": "sa-07", "input": "Trained new reps", "domain": "sales", "expected_themes": ["onboarding", "reps", "ramp", "quota"]}
+{"id": "sa-08", "input": "Managed sales territory", "domain": "sales", "expected_themes": ["territory", "accounts", "revenue", "growth"]}
+{"id": "ma-01", "input": "Ran marketing campaigns", "domain": "marketing", "expected_themes": ["campaigns", "leads", "conversion", "channels"]}
+{"id": "ma-02", "input": "Wrote blog posts", "domain": "marketing", "expected_themes": ["content", "traffic", "seo", "audience"]}
+{"id": "ma-03", "input": "Managed social media", "domain": "marketing", "expected_themes": ["social", "engagement", "followers", "brand"]}
+{"id": "ma-04", "input": "Did SEO work", "domain": "marketing", "expected_themes": ["seo", "traffic", "rankings", "keywords"]}
+{"id": "ma-05", "input": "Worked on email marketing", "domain": "marketing", "expected_themes": ["email", "open rate", "conversion", "list"]}
+{"id": "ma-06", "input": "Helped with product launch", "domain": "marketing", "expected_themes": ["launch", "press", "users", "channels"]}
+{"id": "ma-07", "input": "Managed paid ads", "domain": "marketing", "expected_themes": ["paid", "cac", "conversion", "spend"]}
+{"id": "ma-08", "input": "Did partner marketing", "domain": "marketing", "expected_themes": ["partners", "co-marketing", "leads", "pipeline"]}
+{"id": "op-01", "input": "Improved team processes", "domain": "ops", "expected_themes": ["processes", "efficiency", "team", "throughput"]}
+{"id": "op-02", "input": "Managed vendor relationships", "domain": "ops", "expected_themes": ["vendors", "contracts", "cost", "sla"]}
+{"id": "op-03", "input": "Did capacity planning", "domain": "ops", "expected_themes": ["capacity", "headcount", "growth", "budget"]}
+{"id": "op-04", "input": "Helped with hiring", "domain": "ops", "expected_themes": ["hiring", "candidates", "interviews", "team"]}
+{"id": "op-05", "input": "Ran weekly standups", "domain": "ops", "expected_themes": ["standup", "team", "alignment", "blockers"]}
+{"id": "op-06", "input": "Managed office logistics", "domain": "ops", "expected_themes": ["office", "logistics", "cost", "employees"]}
+{"id": "op-07", "input": "Worked on budget planning", "domain": "ops", "expected_themes": ["budget", "planning", "stakeholders", "forecast"]}
+{"id": "op-08", "input": "Improved onboarding", "domain": "ops", "expected_themes": ["onboarding", "new hires", "ramp", "documentation"]}
+{"id": "op-09", "input": "Set up new system", "domain": "ops", "expected_themes": ["system", "rollout", "adoption", "stakeholders"]}
