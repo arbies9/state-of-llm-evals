@@ -2,7 +2,10 @@
 
 Run with:
     OPENAI_API_KEY=sk-... inspect eval eval_resume_bullets.py \\
-        --model openai/gpt-4o-mini -T temperature=0.2
+        --model openai/gpt-4o-mini
+
+Generation temperature is pinned to 0.2 in the Task config below so the
+comparison constraint can't be dropped on the command line.
 
 Costs (approx, current OpenAI pricing): ~$0.50-$1 for the full 50-row run.
 """
@@ -11,6 +14,7 @@ from __future__ import annotations
 
 from inspect_ai import Task, task
 from inspect_ai.dataset import MemoryDataset, Sample
+from inspect_ai.model import GenerateConfig
 from inspect_ai.scorer import Score, Target, accuracy, scorer
 from inspect_ai.solver import TaskState, generate
 
@@ -73,6 +77,7 @@ def resume_bullet_rewriter() -> Task:
     return Task(
         dataset=MemoryDataset(samples=_samples()),
         solver=[generate()],
+        config=GenerateConfig(temperature=0.2),
         scorer=[
             faithfulness_scorer(),
             theme_coverage_scorer(),

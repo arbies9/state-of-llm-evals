@@ -23,9 +23,9 @@ Stored as JSONL in [`benchmark/dataset.jsonl`](../benchmark/dataset.jsonl).
 
 Per output:
 
-1. **Faithfulness** — does the rewrite invent metrics or facts not in the input? (LLM judge, strict)
+1. **Faithfulness** — does the rewrite invent metrics or facts not in the input? (LLM judge, strict — rubric in [`benchmark/faithfulness-rubric.md`](../benchmark/faithfulness-rubric.md))
 2. **Theme coverage** — does the rewrite hit ≥2 of the `expected_themes`? (Programmatic)
-3. **Style** — does it pass a STAR-style rubric? (LLM judge, rubric in `style-rubric.md`)
+3. **Style** — does it pass a STAR-style rubric? (LLM judge, rubric in [`benchmark/style-rubric.md`](../benchmark/style-rubric.md))
 4. **Length** — within 25–40 words. (Programmatic)
 
 ## Why these four

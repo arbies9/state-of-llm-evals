@@ -7,10 +7,10 @@ per-metric pass rates and writes results.mock.json.
 Run with:
     python3 eval_mock.py
 
-The mock rewriter is identical to ../braintrust/eval_mock.py and
-../promptfoo/providers/mock-rewriter.js — same 4 templates, JS-exact
-hash — so the two programmatic metrics (length, theme_coverage) line
-up per-row across all three tools' mock modes.
+The mock rewriter is identical to ../braintrust/eval_mock.py,
+../inspect/eval_mock.py and ../promptfoo/providers/mock-rewriter.js —
+same 4 templates, JS-exact hash — so the two programmatic metrics
+(length, theme_coverage) line up per-row across all four tools' mock modes.
 """
 
 from __future__ import annotations
@@ -52,7 +52,8 @@ def _hash(s: str) -> int:
 
 
 def mock_rewriter(input_text: str) -> str:
-    bucket = _hash(input_text) % 4
+    # Hash the trimmed input — mock-rewriter.js trims before hashing too.
+    bucket = _hash(input_text.strip()) % 4
     body = _strip_verb(input_text.strip())
     if bucket == 0:
         return (

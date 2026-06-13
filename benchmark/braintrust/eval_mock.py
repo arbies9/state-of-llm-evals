@@ -5,8 +5,13 @@ exercises the dataset loader and the scorers so you can verify the pipeline
 works without paying for OpenAI or creating a Braintrust account. To run the
 real Braintrust integration, see `eval_resume_bullets.py`.
 
-Logic mirrors `benchmark/promptfoo/providers/{mock-rewriter,mock-judge}.js`
-so pass rates line up across the two tools' mock modes.
+The mock rewriter is identical to ../promptfoo/providers/mock-rewriter.js
+(and the langsmith/inspect mocks) — same 4 templates, JS-exact hash — so the
+two programmatic metrics (length, theme_coverage) line up per-row across all
+four tools' mock modes. The mock judge metrics (faithfulness, style) seed on
+input + "||" + output, matching the langsmith/inspect mocks per-row, but NOT
+../promptfoo/providers/mock-judge.js, which seeds on the full rendered
+grading prompt — so Promptfoo's judge numbers differ from the other three.
 
 Run with:
     python3 eval_mock.py
@@ -52,7 +57,8 @@ def _hash(s: str) -> int:
 
 
 def mock_rewriter(input: str) -> str:
-    bucket = _hash(input) % 4
+    # Hash the trimmed input — mock-rewriter.js trims before hashing too.
+    bucket = _hash(input.strip()) % 4
     body = _strip_verb(input.strip())
     if bucket == 0:
         return (

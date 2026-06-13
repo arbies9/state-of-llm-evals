@@ -9,7 +9,7 @@ One file per tool. Each follows the same shape so you can scan them side by side
 5. **Where it bites**
 6. **My rubric scores** — and the one-line reasoning for each axis
 
-Files (placeholders, to be filled during the eval pass):
+Files (drafts — scores provisional until the scoring pass):
 
 - [x] `promptfoo.md` (draft — scores provisional until scoring pass)
 - [x] `braintrust.md` (draft — scores provisional until scoring pass)

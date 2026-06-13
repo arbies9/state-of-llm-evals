@@ -8,7 +8,7 @@ Runs the shared resume-bullet workload through [LangSmith](https://smith.langcha
 langsmith/
 ├── eval_resume_bullets.py   # the real eval — uses langsmith.evaluate()
 ├── eval_mock.py             # offline smoke test, NO API calls, NO account
-├── dataset_loader.py        # reads ../dataset.jsonl into LangSmith Example shape
+├── dataset_loader.py        # reads ../dataset.jsonl into plain-dict rows
 ├── evaluators.py            # length, theme_coverage, faithfulness, style
 ├── requirements.txt         # langsmith, openai
 └── README.md                # you are here
@@ -38,11 +38,11 @@ Logs go to a LangSmith experiment prefixed `resume-bullet-rewriter-*`. Cost matc
 python3 eval_mock.py
 ```
 
-Bypasses LangSmith entirely — constructs the same `Run` and `Example` shapes the real evaluators receive (`types.SimpleNamespace`) so the exact same evaluator code paths execute. Mock rewriter is identical to Promptfoo's and Braintrust's mocks, so the two programmatic metrics (`length`, `theme_coverage`) match per-row across all three tools' mock modes. Mock judges are independent deterministic noise.
+Bypasses LangSmith entirely — constructs the same `Run` and `Example` shapes the real evaluators receive (`types.SimpleNamespace`) so the exact same evaluator code paths execute. Mock rewriter is identical to the Promptfoo, Braintrust, and Inspect mocks, so the two programmatic metrics (`length`, `theme_coverage`) match per-row across all four tools' mock modes. Mock judges seed on the same string as the Braintrust/Inspect mocks (so those three agree per-row); Promptfoo's mock judge seeds differently.
 
 ## Notes on choices
 
 - **Language**: Python. LangSmith's docs and SDK examples lean Python; matches the Braintrust setup, which makes cross-comparison easier.
 - **No LangChain dependency.** We use `langsmith.evaluate()` directly with a plain Python `task(inputs) -> outputs` function. LangSmith is usable without LangChain; this keeps the comparison honest by not mixing eval-framework characteristics with framework-choice ones.
-- **Prompt**: hardcoded in `eval_resume_bullets.py`, kept in sync with the Promptfoo prompt file and the Braintrust prompt string. If you change one, change all three. (Future refactor: promote to `benchmark/prompts/rewrite.txt`.)
+- **Prompt**: hardcoded in `eval_resume_bullets.py`, kept in sync with the Promptfoo prompt file and the Braintrust/Inspect prompt strings. If you change one, change all four. (Future refactor: promote to `benchmark/prompts/rewrite.txt`.)
 - **Judge model**: `gpt-4o`, called via the OpenAI SDK directly — same path as Braintrust, so judge behavior is comparable.

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Interactive comparison — State of LLM Evals</title>
+<meta name="description" content="Re-weight the eval-tool rubric and watch the ranking change. Promptfoo, Braintrust, LangSmith, Inspect, Ragas.">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<script>
+  (function () {
+    try {
+      var mode = localStorage.getItem('state-of-llm-evals-theme') || 'auto';
+      var dark = mode === 'dark' || (mode === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      document.documentElement.dataset.mode = mode;
+    } catch (err) {
+      document.documentElement.dataset.theme = 'light';
+      document.documentElement.dataset.mode = 'auto';
+    }
+  })();
+</script>
+<style>
+  :root {
+    color-scheme: light;
+    --accent: #ff4d4d;
+    --accent-strong: #d91616;
+    --accent-soft: rgba(255, 77, 77, .12);
+    --ink: #111214;
+    --muted: #5c626b;
+    --line: #dedfe3;
+    --bg: #f5f5f5;
+    --bg-soft: #f0f1f3;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --button-bg: #ffffff;
+    --bar-track: #eef0f2;
+    --score-1: #ffe0e0;
+    --score-2: #fff0dc;
+    --score-3: #fff8bf;
+    --score-4: #dff7e9;
+    --score-5: #bff0d0;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    --accent: #ff5a5a;
+    --accent-strong: #ff7a7a;
+    --accent-soft: rgba(255, 90, 90, .16);
+    --ink: #f4f5f7;
+    --muted: #a8adb7;
+    --line: #30343b;
+    --bg: #07080a;
+    --bg-soft: #15181d;
+    --surface: #0f1115;
+    --surface-raised: #14171c;
+    --button-bg: #101318;
+    --bar-track: #1b1f26;
+    --score-1: #4b1f24;
+    --score-2: #4a341d;
+    --score-3: #4d4520;
+    --score-4: #1f4330;
+    --score-5: #195134;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: var(--ink); background: var(--bg);
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .page-head { display: flex; justify-content: space-between; gap: 1.5rem; align-items: start; }
+  .page-head > div:first-child { min-width: 0; }
+  header h1 { margin: 0 0 .25rem; font-size: 1.7rem; line-height: 1.2; }
+  header p { margin: .25rem 0; color: var(--muted); overflow-wrap: anywhere; }
+  header a { color: var(--accent); text-decoration: none; }
+  header a:hover { text-decoration: underline; }
+  .mode-control {
+    display: inline-flex;
+    flex: 0 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: .18rem;
+    background: var(--surface-raised);
+  }
+  .mode-control button {
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: .78rem;
+    line-height: 1;
+    min-height: 30px;
+    padding: .35rem .65rem;
+  }
+  .mode-control button:hover { color: var(--ink); }
+  .mode-control button.active { background: var(--ink); color: var(--bg); }
+  .banner {
+    margin: 1rem 0 1.5rem; padding: .6rem .9rem; border-left: 4px solid var(--accent);
+    background: var(--bg-soft); border-radius: 0 6px 6px 0; font-size: .92rem;
+    overflow-wrap: anywhere;
+  }
+  .cols { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 2rem; align-items: start; }
+  @media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
+
+  .panel { border: 1px solid var(--line); border-radius: 8px; padding: 1.1rem 1.2rem; min-width: 0; overflow-wrap: anywhere; background: var(--surface); }
+  .panel h2 { margin: 0 0 .75rem; font-size: 1.05rem; }
+
+  .presets { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; min-width: 0; }
+  .presets button {
+    border: 1px solid var(--line); background: var(--button-bg); border-radius: 999px;
+    padding: .25rem .7rem; font-size: .82rem; line-height: 1.3; cursor: pointer; color: var(--ink);
+    max-width: 100%; text-align: left; white-space: normal; overflow-wrap: anywhere;
+  }
+  .presets button:hover { border-color: var(--accent); color: var(--accent); }
+  .presets button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .axis { margin-bottom: .65rem; }
+  .axis label { display: flex; justify-content: space-between; gap: .75rem; font-size: .88rem; cursor: help; }
+  .axis label span:first-child { min-width: 0; overflow-wrap: anywhere; }
+  .axis label .pct { font-variant-numeric: tabular-nums; color: var(--muted); }
+  .axis input[type=range] { display: block; width: 100%; min-width: 0; accent-color: var(--accent); margin: 0; }
+  .sum-note { font-size: .8rem; color: var(--muted); margin-top: .5rem; }
+
+  .rank-row {
+    display: grid;
+    grid-template-columns: minmax(150px, .9fr) minmax(180px, 1.5fr) minmax(96px, auto);
+    gap: .6rem;
+    align-items: center;
+    margin-bottom: .65rem;
+  }
+  .rank-row > * { min-width: 0; }
+  .rank-row .name { font-weight: 600; font-size: .92rem; }
+  .rank-row .name small { display: block; font-weight: 400; color: var(--muted); font-size: .75rem; line-height: 1.25; }
+  .bar-track { background: var(--bar-track); border-radius: 6px; height: 26px; position: relative; overflow: hidden; }
+  .bar {
+    height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+    transition: width .25s ease; min-width: 2px; opacity: .85;
+  }
+  .rank-row.first .bar { opacity: 1; }
+  .rank-row .total { justify-self: end; min-width: 78px; font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+  .delta { font-size: .72rem; line-height: 1.15; font-weight: 400; color: var(--muted); }
+
+  .table-scroll { width: 100%; overflow-x: auto; margin-top: 1.5rem; }
+  table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: .9rem; }
+  th, td { border: 1px solid var(--line); padding: .45rem .6rem; text-align: center; vertical-align: top; }
+  th { background: var(--bg-soft); }
+  td.axis-name, th.axis-name { text-align: left; }
+  td.score { font-weight: 600; cursor: help; }
+  td.score-1 { background: var(--score-1); }
+  td.score-2 { background: var(--score-2); }
+  td.score-3 { background: var(--score-3); }
+  td.score-4 { background: var(--score-4); }
+  td.score-5 { background: var(--score-5); }
+  td.w { color: var(--muted); font-variant-numeric: tabular-nums; }
+  tr.total-row td { font-weight: 700; background: var(--bg-soft); }
+
+  .actions { margin-top: 1.25rem; display: flex; gap: .6rem; flex-wrap: wrap; }
+  .actions button {
+    border: 1px solid var(--accent); color: var(--accent); background: var(--button-bg);
+    border-radius: 6px; padding: .4rem .9rem; min-height: 36px; font-size: .85rem; cursor: pointer;
+  }
+  .actions button:hover { background: var(--accent); color: #fff; }
+  .flash { font-size: .82rem; color: var(--accent); align-self: center; }
+
+  footer { margin-top: 2.5rem; font-size: .85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 1rem; }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 560px) {
+    body { font-size: 14px; }
+    .wrap { padding: 1.2rem .85rem 3rem; }
+    .page-head { display: grid; gap: .9rem; }
+    .mode-control { width: 100%; }
+    .mode-control button { flex: 1 1 0; }
+    .panel { padding: .9rem; }
+    .presets { display: grid; grid-template-columns: 1fr; }
+    .presets button { width: 100%; text-align: center; }
+    .rank-row { grid-template-columns: minmax(0, 1fr) minmax(78px, auto); gap: .35rem .65rem; margin-bottom: .9rem; }
+    .bar-track { grid-column: 1 / -1; grid-row: 2; height: 24px; }
+    .rank-row .total { align-self: start; }
+    .actions { gap: .5rem; }
+    .actions button { flex: 1 1 150px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page-head">
+    <div>
+      <h1>Interactive comparison</h1>
+      <p>Re-weight the <a href="../#/methodology/rubric">scoring rubric</a> for <em>your</em> team and watch the ranking change.
+         Per-axis scores are fixed (they come from the <a href="../#/tools/">tool briefs</a>); the weights are yours to argue with.</p>
+    </div>
+    <div class="mode-control" role="group" aria-label="Color mode">
+      <button type="button" data-mode="light">Light</button>
+      <button type="button" data-mode="dark">Dark</button>
+      <button type="button" data-mode="auto">Auto</button>
+    </div>
+  </header>
+
+  <div class="banner">
+    <strong>Draft scores.</strong> Provisional until the scoring pass — see
+    <a href="../#/comparison">comparison.md</a> for the full synthesis, caveats, and what might still move.
+    Ragas* is a RAG metric <em>library</em>, not a framework; its row is structurally penalized on framework axes
+    (<a href="../#/tools/ragas">why</a>).
+  </div>
+
+  <div class="cols">
+    <div class="panel">
+      <h2>Weights</h2>
+      <div class="presets" id="presets"></div>
+      <div id="sliders"></div>
+      <div class="sum-note" id="sumNote"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Ranking (weighted total, 1–5 scale)</h2>
+      <div id="ranking"></div>
+      <div class="actions">
+        <button id="copyMd">Copy as markdown</button>
+        <button id="copyLink">Copy shareable link</button>
+        <span class="flash" id="flash" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-scroll" aria-label="Per-axis score matrix">
+    <table id="matrix"></table>
+  </div>
+
+  <footer>
+    Scores source of truth: the per-tool briefs in <a href="../#/tools/">tools/</a> (draft, provisional until the scoring pass).
+    Totals here are always recomputed live from the axis scores — the one kind of arithmetic error this page can't make.
+    Part of <a href="../">State of LLM Evals</a>.
+  </footer>
+</div>
+
+<script>
+const AXES = [
+  { key: 'ergo',     name: 'Developer ergonomics', w: 20, desc: 'How fast a competent engineer goes from install to a passing eval in CI. Docs, defaults, errors.' },
+  { key: 'ci',       name: 'CI integration',       w: 15, desc: 'Runs as a check on every PR; diffable output the team can review.' },
+  { key: 'cost',     name: 'Cost transparency',    w: 15, desc: 'Can you see what each eval run cost, attributed by model/route/dataset?' },
+  { key: 'multi',    name: 'Multi-model support',  w: 15, desc: 'Same eval against OpenAI, Anthropic, OSS via Ollama/vLLM, without rewriting.' },
+  { key: 'analysis', name: 'Output analysis',      w: 15, desc: 'Understanding WHY scores changed: regressions, slices, failure clustering.' },
+  { key: 'oss',      name: 'OSS posture',          w: 10, desc: 'License, self-host story, whether OSS is the real product or a trial.' },
+  { key: 'safety',   name: 'Safety / red-team',    w: 10, desc: 'First-class adversarial prompts, jailbreak suites, PII leak checks.' },
+];
+
+const TOOLS = [
+  { name: 'Promptfoo', tag: 'OSS-first, CI-native, red-team built in',
+    scores: { ergo: 5, ci: 4, cost: 3, multi: 5, analysis: 3, oss: 5, safety: 5 },
+    why: {
+      ergo: 'npx promptfoo eval → passing eval well under 30 min, no account.',
+      ci: 'Exit codes + JSON output first-class; PR comments are a separate Action.',
+      cost: 'Per-row token + cost in the UI; no aggregate-over-time view.',
+      multi: 'First-class providers for every major API + Ollama + vLLM + generic HTTP.',
+      analysis: 'Per-row drill-down and diffs; no slice analysis or failure clustering.',
+      oss: 'MIT; self-host is the default, hosted is convenience-only.',
+      safety: 'promptfoo redteam is a first-class subcommand with maintained suites.',
+    } },
+  { name: 'Braintrust', tag: 'Hosted, best analysis + cost views',
+    scores: { ergo: 4, ci: 4, cost: 5, multi: 4, analysis: 5, oss: 2, safety: 2 },
+    why: {
+      ergo: 'Clean Pythonic SDK, ~25 min to a passing eval; needs an account for the good parts.',
+      ci: 'braintrust eval works in CI; PR comments are a separate wire-up.',
+      cost: 'Auto-captured per-call cost rolling up to experiment/project. Best in class.',
+      multi: 'Major APIs via proxy; OSS models via OpenAI-compatible endpoints.',
+      analysis: 'Run-over-run diffs, slice analysis, per-row drill-down with full trace.',
+      oss: 'SDK is OSS, the product is not; self-host is not a story.',
+      safety: 'DIY adversarial datasets; no built-in red-team mode.',
+    } },
+  { name: 'LangSmith', tag: 'Best tracing; strongest if you are on LangChain',
+    scores: { ergo: 3, ci: 4, cost: 4, multi: 4, analysis: 5, oss: 2, safety: 2 },
+    why: {
+      ergo: 'Clean once you find the right evaluate() generation; API churn + LC-flavored docs cost it.',
+      ci: 'python eval works in CI; PR comments are a separate wire-up.',
+      cost: 'Tokens + cost per run and per experiment; slight edge to Braintrust on rollups.',
+      multi: 'Via LangChain providers or direct SDK calls.',
+      analysis: 'Excellent diff views; tracing makes failure analysis trivial for multi-step tasks.',
+      oss: 'SDK is OSS, the product is not. Same posture as Braintrust.',
+      safety: 'DIY via custom evaluators + datasets; nothing prebuilt.',
+    } },
+  { name: 'Inspect', tag: 'Open-source rigor; best per-sample analysis',
+    scores: { ergo: 3, ci: 4, cost: 3, multi: 5, analysis: 5, oss: 5, safety: 4 },
+    why: {
+      ergo: 'Decorator + async DSL pushes past the 30-min bar; pays off on complex evals.',
+      ci: 'inspect eval works in CI; logs are diffable JSON.',
+      cost: 'Per-sample tokens in logs; no aggregate or run-over-run cost view.',
+      multi: 'First-class providers incl. Ollama/vLLM; --model switch is clean.',
+      analysis: 'The Inspect Viewer is the best per-sample analysis tool in this comparison.',
+      oss: 'MIT, no account, no hosted dependency — the OSS is the product.',
+      safety: 'Built for safety/capability research; maintained suites, not a red-team mode.',
+    } },
+  { name: 'Ragas*', tag: 'RAG metric library — pair with a framework',
+    scores: { ergo: 3, ci: 3, cost: 2, multi: 4, analysis: 1, oss: 5, safety: 1 },
+    why: {
+      ergo: 'pip install is trivial; wiring it into your runner is on you. A 4 if your task is RAG-shaped.',
+      ci: 'It is a library — CI is as good as your runner.',
+      cost: 'No built-in tracking; whatever your runner provides.',
+      multi: 'Swappable judge LLM via RunConfig; OpenAI-compatible endpoints.',
+      analysis: 'No UI, no diffs, no slices — returns scores, that is it.',
+      oss: 'Apache 2.0, no hosted dependency, no account.',
+      safety: 'Out of scope; not what Ragas is for.',
+    } },
+];
+
+const PRESETS = [
+  { name: 'Mid-size product team (default)', w: [20, 15, 15, 15, 15, 10, 10] },
+  { name: 'Regulated / safety-critical',     w: [15, 12, 10, 10, 13, 10, 30] },
+  { name: 'Analysis-first, hosted is fine',  w: [15, 10, 20, 10, 30,  0, 15] },
+  { name: 'Research lab',                    w: [10, 10,  5, 25, 30, 15,  5] },
+  { name: 'OSS mandate',                     w: [20, 10,  5, 15, 10, 30, 10] },
+];
+
+let weights = AXES.map(a => a.w);
+let activePreset = 0;
+
+// --- init from URL (?w=20,15,15,15,15,10,10) ---
+const urlW = new URLSearchParams(location.search).get('w');
+if (urlW) {
+  const parsed = urlW.split(',').map(Number);
+  if (parsed.length === AXES.length && parsed.every(n => Number.isFinite(n) && n >= 0)) {
+    weights = parsed;
+    activePreset = PRESETS.findIndex(p => p.w.join() === parsed.join());
+  }
+}
+
+function normalized() {
+  const sum = weights.reduce((a, b) => a + b, 0);
+  return sum === 0 ? weights.map(() => 1 / weights.length) : weights.map(w => w / sum);
+}
+
+function totals() {
+  const norm = normalized();
+  return TOOLS.map(t => ({
+    tool: t,
+    total: AXES.reduce((acc, a, i) => acc + norm[i] * t.scores[a.key], 0),
+  })).sort((x, y) => y.total - x.total);
+}
+
+function defaultTotals() {
+  const sum = AXES.reduce((a, x) => a + x.w, 0);
+  return Object.fromEntries(TOOLS.map(t => [
+    t.name, AXES.reduce((acc, a) => acc + (a.w / sum) * t.scores[a.key], 0),
+  ]));
+}
+const DEFAULTS = defaultTotals();
+
+// --- render: presets ---
+const presetsEl = document.getElementById('presets');
+PRESETS.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.textContent = p.name;
+  b.onclick = () => { weights = [...p.w]; activePreset = i; renderAll(); };
+  presetsEl.appendChild(b);
+});
+
+// --- render: sliders ---
+const slidersEl = document.getElementById('sliders');
+AXES.forEach((a, i) => {
+  const div = document.createElement('div');
+  div.className = 'axis';
+  div.innerHTML = `
+    <label title="${a.desc}"><span>${a.name}</span><span class="pct" id="pct-${i}"></span></label>
+    <input type="range" min="0" max="40" step="1" id="sl-${i}">`;
+  slidersEl.appendChild(div);
+  const sl = div.querySelector('input');
+  sl.oninput = () => { weights[i] = Number(sl.value); activePreset = -1; renderAll(); };
+});
+
+function renderAll() {
+  const norm = normalized();
+  const sum = weights.reduce((a, b) => a + b, 0);
+
+  document.querySelectorAll('#presets button').forEach((b, i) =>
+    b.classList.toggle('active', i === activePreset));
+
+  AXES.forEach((a, i) => {
+    document.getElementById(`sl-${i}`).value = weights[i];
+    document.getElementById(`pct-${i}`).textContent =
+      `${weights[i]}  →  ${(norm[i] * 100).toFixed(0)}%`;
+  });
+  document.getElementById('sumNote').textContent =
+    sum === 100
+      ? 'Raw weights sum to 100 — used as-is.'
+      : `Raw weights sum to ${sum} — normalized to 100% for scoring (shown after the arrow).`;
+
+  // ranking bars
+  const ranked = totals();
+  const rankingEl = document.getElementById('ranking');
+  rankingEl.innerHTML = '';
+  ranked.forEach((r, idx) => {
+    const delta = r.total - DEFAULTS[r.tool.name];
+    const row = document.createElement('div');
+    row.className = 'rank-row' + (idx === 0 ? ' first' : '');
+    row.innerHTML = `
+      <div class="name">${r.tool.name}<small>${r.tool.tag}</small></div>
+      <div class="bar-track"><div class="bar" style="width:${(r.total / 5) * 100}%"></div></div>
+      <div class="total">${r.total.toFixed(2)}<div class="delta">${delta >= 0.005 ? '+' : ''}${Math.abs(delta) < 0.005 ? '±' : ''}${delta.toFixed(2)} vs default</div></div>`;
+    rankingEl.appendChild(row);
+  });
+
+  let html = `<tr><th class="axis-name">Axis</th><th>Weight</th>${TOOLS.map(t => `<th>${t.name}</th>`).join('')}</tr>`;
+  AXES.forEach((a, i) => {
+    html += `<tr><td class="axis-name" title="${a.desc}">${a.name}</td><td class="w">${(norm[i] * 100).toFixed(0)}%</td>`;
+    html += TOOLS.map(t =>
+      `<td class="score score-${t.scores[a.key]}" title="${t.why[a.key]}">${t.scores[a.key]}</td>`).join('');
+    html += '</tr>';
+  });
+  const byName = Object.fromEntries(totals().map(r => [r.tool.name, r.total]));
+  html += `<tr class="total-row"><td class="axis-name">Weighted total</td><td class="w">100%</td>${
+    TOOLS.map(t => `<td>${byName[t.name].toFixed(2)}</td>`).join('')}</tr>`;
+  document.getElementById('matrix').innerHTML = html;
+
+  history.replaceState(null, '', `?w=${weights.join(',')}`);
+}
+
+// --- color mode ---
+const THEME_KEY = 'state-of-llm-evals-theme';
+const themeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+
+function resolvedTheme(mode) {
+  return mode === 'dark' || (mode === 'auto' && themeMedia.matches) ? 'dark' : 'light';
+}
+
+function setThemeMode(mode) {
+  const nextMode = ['light', 'dark', 'auto'].includes(mode) ? mode : 'auto';
+  localStorage.setItem(THEME_KEY, nextMode);
+  document.documentElement.dataset.mode = nextMode;
+  document.documentElement.dataset.theme = resolvedTheme(nextMode);
+  document.querySelectorAll('.mode-control button').forEach((button) => {
+    button.classList.toggle('active', button.dataset.mode === nextMode);
+    button.setAttribute('aria-pressed', String(button.dataset.mode === nextMode));
+  });
+}
+
+document.querySelectorAll('.mode-control button').forEach((button) => {
+  button.onclick = () => setThemeMode(button.dataset.mode);
+});
+
+themeMedia.addEventListener('change', () => {
+  if ((localStorage.getItem(THEME_KEY) || 'auto') === 'auto') setThemeMode('auto');
+});
+
+// --- export ---
+function flash(msg) {
+  const el = document.getElementById('flash');
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ''; }, 2000);
+}
+
+document.getElementById('copyMd').onclick = () => {
+  const norm = normalized();
+  const ranked = totals();
+  const presetName = activePreset >= 0 ? PRESETS[activePreset].name : 'custom weights';
+  let md = `### Eval-tool ranking (${presetName})\n\n`;
+  md += `| Axis | Weight |${TOOLS.map(t => ` ${t.name} |`).join('')}\n`;
+  md += `|---|---|${TOOLS.map(() => '---|').join('')}\n`;
+  AXES.forEach((a, i) => {
+    md += `| ${a.name} | ${(norm[i] * 100).toFixed(0)}% |${TOOLS.map(t => ` ${t.scores[a.key]} |`).join('')}\n`;
+  });
+  const byName = Object.fromEntries(ranked.map(r => [r.tool.name, r.total]));
+  md += `| **Weighted total** | 100% |${TOOLS.map(t => ` **${byName[t.name].toFixed(2)}** |`).join('')}\n`;
+  md += `\nRanking: ${ranked.map((r, i) => `${i + 1}. ${r.tool.name} (${r.total.toFixed(2)})`).join(' · ')}\n`;
+  md += `\nScores: draft, from [state-of-llm-evals](https://github.com/arbies9/state-of-llm-evals) tool briefs. ${location.href}\n`;
+  writeClipboard(md, 'Markdown copied');
+};
+
+document.getElementById('copyLink').onclick = () =>
+  writeClipboard(location.href, 'Link copied');
+
+function writeClipboard(text, okMsg) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => flash(okMsg)).catch(() => fallbackCopy(text, okMsg));
+    return;
+  }
+  fallbackCopy(text, okMsg);
+}
+
+function fallbackCopy(text, okMsg) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+    flash(okMsg);
+  } catch (err) {
+    flash('Copy failed');
+  } finally {
+    document.body.removeChild(textarea);
+  }
+}
+
+setThemeMode(localStorage.getItem(THEME_KEY) || document.documentElement.dataset.mode || 'auto');
+renderAll();
+</script>
+</body>
+</html>

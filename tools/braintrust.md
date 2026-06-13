@@ -15,7 +15,7 @@ Roughly 30–45 minutes if you're starting from zero:
 3. Write the `Eval()` call, the task function, and the scorers (~25 min for our workload, including reading enough SDK docs to know that scorers should return `{"name", "score", "metadata"}`)
 4. `braintrust eval my_eval.py` (1 min)
 
-Our [`benchmark/braintrust/`](../benchmark/braintrust/) is ~150 lines of Python across four files (loader, scorers, real eval, mock eval). The friction point: deciding how scorer signatures should handle the `(input, output, expected, metadata)` quartet — the SDK accepts both positional and keyword forms and the docs don't strongly steer one way.
+Our [`benchmark/braintrust/`](../benchmark/braintrust/) is ~360 lines of Python across four files (loader, scorers, real eval, mock eval) — ~215 excluding the offline mock runner. The friction point: deciding how scorer signatures should handle the `(input, output, expected, metadata)` quartet — the SDK accepts both positional and keyword forms and the docs don't strongly steer one way.
 
 ## 3. Primitives
 
@@ -54,7 +54,7 @@ Our [`benchmark/braintrust/`](../benchmark/braintrust/) is ~150 lines of Python 
 | OSS posture | 0.10 | **2** | SDK is OSS, the product (UI, storage, comparison features) is not. Self-host is not a story. |
 | Safety / red-team | 0.10 | **2** | Possible to build adversarial datasets yourself; no built-in red-team mode or maintained suites. |
 
-**Weighted total (draft): 3.95 / 5.**
+**Weighted total (draft): 3.90 / 5.**
 
 ## 7. Open questions before final scoring
 

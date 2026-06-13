@@ -24,9 +24,11 @@ Same shared rubrics as every other tool: [`../style-rubric.md`](../style-rubric.
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 export OPENAI_API_KEY=sk-...
-inspect eval eval_resume_bullets.py --model openai/gpt-4o-mini -T temperature=0.2
+inspect eval eval_resume_bullets.py --model openai/gpt-4o-mini
 inspect view   # opens the Inspect Viewer to drill into results
 ```
+
+Generation temperature (0.2, matching the other tools) is pinned in the `Task` config rather than passed on the command line, so it can't be dropped accidentally.
 
 The `inspect view` TUI/web app is one of the strongest features of the tool — every sample, every scorer output, every model call is browsable. Cost matches the other tools: ~150 model calls (~$0.50–$1).
 

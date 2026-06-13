@@ -9,6 +9,11 @@ class MockJudge {
   }
 
   async callApi(prompt) {
+    // The seed covers promptfoo's fully rendered llm-rubric grading prompt,
+    // so verdicts are only stable for the promptfoo version pinned in
+    // ../../run-mocks.sh — a version bump that changes the internal grading
+    // template reshuffles them (the Python mocks seed on input+output and
+    // are unaffected).
     const seed = hash(String(prompt));
     const pass = seed % 5 !== 0; // ~80% pass rate
     const payload = {

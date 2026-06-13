@@ -16,7 +16,7 @@ Roughly 30–45 minutes if you've used a decorator-driven Python framework befor
 4. `inspect eval eval_resume_bullets.py --model openai/gpt-4o-mini` (1 min)
 5. `inspect view` to actually use the results (1 min)
 
-[`benchmark/inspect/`](../benchmark/inspect/) is ~200 lines of Python across four files. The friction we hit: the `Scorer` protocol is async-everywhere and decorator-wrapped, which is fine once you internalize it but is the steepest part of the ramp.
+[`benchmark/inspect/`](../benchmark/inspect/) is ~365 lines of Python across four files — ~230 excluding the offline mock runner. The friction we hit: the `Scorer` protocol is async-everywhere and decorator-wrapped, which is fine once you internalize it but is the steepest part of the ramp.
 
 ## 3. Primitives
 
@@ -57,7 +57,7 @@ Roughly 30–45 minutes if you've used a decorator-driven Python framework befor
 | OSS posture | 0.10 | **5** | MIT, no hosted dependency, no account required, the OSS *is* the product. |
 | Safety / red-team | 0.10 | **4** | Designed for safety/capability research; ships with maintained eval suites for capability benchmarks. Not "red-team mode" the way Promptfoo is, but the spiritual closest fit. |
 
-**Weighted total (draft): 3.95 / 5.**
+**Weighted total (draft): 4.05 / 5.**
 
 ## 7. Open questions before final scoring
 

@@ -15,7 +15,7 @@ About 30 minutes from zero:
 3. Write the `task(inputs)` callable, a few `evaluator(run, example)` functions, and the `evaluate(...)` call (~20 min for our workload — the docs are clear on the function signatures)
 4. `python3 eval_resume_bullets.py` (1 min)
 
-[`benchmark/langsmith/`](../benchmark/langsmith/) is ~170 lines of Python across four files. The friction point: the SDK has had multiple eval API generations (`evaluate` vs `aevaluate` vs decorator-based), and finding the canonical current pattern took some doc spelunking. Worth knowing about before you start.
+[`benchmark/langsmith/`](../benchmark/langsmith/) is ~390 lines of Python across four files — ~240 excluding the offline mock runner. The friction point: the SDK has had multiple eval API generations (`evaluate` vs `aevaluate` vs decorator-based), and finding the canonical current pattern took some doc spelunking. Worth knowing about before you start.
 
 ## 3. Primitives
 

@@ -21,4 +21,4 @@ Goal: a curious reader can clone the repo, `cd` into one of the four implemented
 
 - All implementations target the same model (`gpt-4o-mini`) with `temperature=0.2`.
 - All implementations use the same LLM judge (`gpt-4o`) for graded metrics.
-- Where a tool ships its own default judge, that's also recorded and run as a second pass for comparison.
+- Where a tool ships its own default judge, that will be recorded and run as a second pass during the scoring pass (not implemented yet — all four implementations currently pin the judge to `gpt-4o`).

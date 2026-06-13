@@ -9,12 +9,14 @@ This is a working deep-dive, not a marketing matrix. It's the artifact a TPM or 
 Two single-command entry points, depending on what you want:
 
 ```bash
-./run-docs.sh        # browse the docs at http://localhost:3000 (needs: node)
+./run-docs.sh        # browse the docs at http://localhost:3000 (needs: python3)
 ./run-mocks.sh       # run all four tool mocks + side-by-side table (needs: node, python3)
 ```
 
-- **`./run-docs.sh`** spins up a local markdown server so you can read the README, methodology, tool briefs, and benchmark docs as rendered pages — the same experience as the GitHub repo but offline. Ctrl+C to stop.
+- **`./run-docs.sh`** spins up a local markdown server so you can read the README, methodology, tool briefs, and benchmark docs as rendered pages — the same experience as the GitHub repo but offline. It also serves the **[interactive comparison](./compare/index.html)** at `http://localhost:3000/compare/` — drag the rubric weights and watch the tool ranking re-rank live. Ctrl+C to stop.
 - **`./run-mocks.sh`** runs the same 50-bullet eval workload through all four implemented tools in mock mode (~10 seconds), then prints per-metric pass-rate columns side by side. The "does this project actually work" check.
+
+If port 3000 is busy, run `PORT=3001 ./run-docs.sh`.
 
 Neither needs an account, an API key, or any spend.
 
@@ -54,7 +56,8 @@ What this artifact gets you that vendor blog posts and Twitter threads don't:
 - **[`methodology/`](./methodology/)** — how each tool was scored: rubric, weights, the sample app used as a workload, and what's deliberately excluded.
 - **[`tools/`](./tools/)** — one markdown brief per tool: setup cost, primitives, where it shines, where it bites, weighted rubric score.
 - **[`benchmark/`](./benchmark/)** — the same 50-bullet eval workload (resume-bullet rewriter) implemented in each framework, so the briefs aren't vibes — there's working code behind every claim. Each subdir has a free `mock` mode that runs without API keys or accounts.
-- **[`comparison.md`](./comparison.md)** — the synthesized matrix and the recommendation flow.
+- **[`comparison.md`](./comparison.md)** — the synthesized matrix, the recommendation flow, and where the scores disagreed with my gut.
+- **[`compare/`](./compare/index.html)** — the interactive version: re-weight the rubric for *your* team in the browser, watch the ranking change, copy the result as markdown for your own RFC. Serve it with `./run-docs.sh` → `http://localhost:3000/compare/`.
 
 ---
 
@@ -62,7 +65,7 @@ What this artifact gets you that vendor blog posts and Twitter threads don't:
 
 A concrete workflow for someone walking into the "which eval tool should we adopt?" decision:
 
-1. **Skim TL;DR + rubric.** ~5 minutes. Decide whether the rubric weights match your team's context, or fork the rubric.
+1. **Skim TL;DR + rubric.** ~5 minutes. Decide whether the rubric weights match your team's context, or fork the rubric — the [interactive comparison](./compare/index.html) lets you re-weight without forking anything.
 2. **Read the 2-3 briefs that match your situation.** Not all five — that's wasted time. The *"Where it bites"* section is the one to read carefully; those are the tradeoffs you'll have to defend to leadership and to your engineers.
 3. **Send an engineer to `benchmark/<tool>/`.** ~20 minutes per tool. They sanity-check the brief's *"developer ergonomics"* claim against their own ramp — and they trust your recommendation more because you sent them to working code, not a vendor demo.
 4. **Write your own RFC.** Cite this project as the analysis. Attach the weighted score. Own the decision.
@@ -82,7 +85,7 @@ This is also a deliberate TPM portfolio artifact: a real RFC-style comparison wi
 
 ## Methodology in one sentence
 
-Run the same eval workload through every tool, score each on a fixed rubric (developer ergonomics, CI integration, cost transparency, multi-model support, output analysis, OSS posture), weight by what mid-size product teams actually care about, and write down where the scores disagreed with my gut.
+Run the same eval workload through every tool, score each on a fixed rubric (developer ergonomics, CI integration, cost transparency, multi-model support, output analysis, OSS posture, safety/red-team primitives), weight by what mid-size product teams actually care about, and write down where the scores disagreed with my gut.
 
 Full version: [`methodology/rubric.md`](./methodology/rubric.md).
 
@@ -94,7 +97,8 @@ Full version: [`methodology/rubric.md`](./methodology/rubric.md).
 - [x] Rubric drafted
 - [x] Sample workload implemented (resume-bullet rewriter, 50 prompts)
 - [x] Per-tool implementations (4 of 5 wired; Ragas is brief-only by design — see [`tools/ragas.md`](./tools/ragas.md) for why)
-- [ ] Scoring pass
+- [x] Comparison synthesis ([`comparison.md`](./comparison.md) + [interactive re-weighting](./compare/index.html)) — built on the draft scores
+- [ ] Scoring pass (re-confirm draft scores with real accounts and real API runs; each brief lists its open questions)
 - [ ] First public draft
 - [ ] Open for review / corrections
 

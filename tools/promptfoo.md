@@ -12,10 +12,10 @@ About 15 minutes to a passing eval, no account needed:
 
 ```bash
 export OPENAI_API_KEY=sk-...
-npx promptfoo@latest eval
+npx promptfoo@0.121.15 eval
 ```
 
-The whole [`benchmark/promptfoo/`](../benchmark/promptfoo/) directory is ~80 lines including comments. No SDK install — `npx` is enough. The friction we did hit: deciding where to put the canonical dataset (we kept it at `benchmark/dataset.jsonl` and wrote a tiny `tests.js` loader, rather than duplicating it into Promptfoo's YAML test format).
+The real-eval core of [`benchmark/promptfoo/`](../benchmark/promptfoo/) — YAML config, `tests.js` loader, two custom assertions, prompt template — is ~115 lines including comments; the rest of the directory is the offline mock mode. No SDK install — `npx` is enough. The friction we did hit: deciding where to put the canonical dataset (we kept it at `benchmark/dataset.jsonl` and wrote a tiny `tests.js` loader, rather than duplicating it into Promptfoo's YAML test format).
 
 ## 3. Primitives
 

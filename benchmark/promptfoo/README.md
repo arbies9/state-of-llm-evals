@@ -6,24 +6,33 @@ Runs the shared resume-bullet workload through [Promptfoo](https://promptfoo.dev
 
 ```
 promptfoo/
-├── promptfooconfig.yaml      # the eval definition
+├── promptfooconfig.yaml      # the real eval definition
+├── promptfooconfig.mock.yaml # offline mock eval — no API keys, no account
 ├── prompts/rewrite.txt       # the prompt under test
 ├── tests.js                  # loads ../dataset.jsonl into Promptfoo test cases
 ├── assertions/
 │   ├── theme_coverage.js     # programmatic — ≥2 of expected_themes hit
 │   └── length.js             # programmatic — 25–40 words
+├── providers/
+│   ├── mock-rewriter.js      # offline stand-in for the model under test
+│   └── mock-judge.js         # offline stand-in for the LLM judge
+├── style-rubric.txt          # symlink → ../style-rubric.md
+├── faithfulness-rubric.txt   # symlink → ../faithfulness-rubric.md
 └── README.md                 # you are here
 ```
 
-The two LLM-judge rubrics live one level up at [`../style-rubric.md`](../style-rubric.md) and [`../faithfulness-rubric.md`](../faithfulness-rubric.md) — shared across every tool's implementation so the judge prompts stay identical.
+The two LLM-judge rubrics live one level up at [`../style-rubric.md`](../style-rubric.md) and [`../faithfulness-rubric.md`](../faithfulness-rubric.md) — shared across every tool's implementation so the judge prompts stay identical. The config references them via the local `.txt` symlinks (Promptfoo loads `file://*.txt` as raw text), so the markdown files remain the single source of truth.
 
 ## Run it
 
 ```bash
 # from this directory
 export OPENAI_API_KEY=sk-...
-npx promptfoo@latest eval
-npx promptfoo@latest view   # opens the local web UI
+npx promptfoo@0.121.15 eval
+npx promptfoo@0.121.15 view   # opens the local web UI
+
+# offline mock instead (no API key, ~10s) — same pin as ../../run-mocks.sh
+PROMPTFOO_FAILED_TEST_EXIT_CODE=0 npx promptfoo@0.121.15 eval -c promptfooconfig.mock.yaml
 ```
 
 Results are also written to `results.json` for diffing across runs.

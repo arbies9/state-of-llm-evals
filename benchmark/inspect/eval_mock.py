@@ -51,7 +51,8 @@ def _hash(s: str) -> int:
 
 
 def mock_rewriter(input_text: str) -> str:
-    bucket = _hash(input_text) % 4
+    # Hash the trimmed input — mock-rewriter.js trims before hashing too.
+    bucket = _hash(input_text.strip()) % 4
     body = _strip_verb(input_text.strip())
     if bucket == 0:
         return (

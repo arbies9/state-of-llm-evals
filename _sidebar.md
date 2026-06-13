@@ -1,6 +1,10 @@
 * **Start here**
   * [Project overview](/)
 
+* **The verdict**
+  * [Comparison & recommendation](comparison.md)
+  * [Interactive re-weighting](compare/index.html ':ignore')
+
 * **Methodology**
   * [Scoring rubric](methodology/rubric.md)
   * [Sample workload](methodology/workload.md)
